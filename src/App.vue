@@ -1,6 +1,11 @@
 <template>
   <header>
     <nav>
+      <ul>
+        <li><router-link to="/">Главная</router-link></li>
+        <li><router-link to="/players">Игроки</router-link></li>
+        <li><router-link to="/matches">Матчи</router-link></li>
+      </ul>
       <div v-if="isAuthenticated && user">
         Welcome, {{ user.name }} <button @click="logout">Logout</button>/
       </div>
@@ -20,6 +25,7 @@
       </div>
     </nav>
   </header>
+  <router-view></router-view>
 </template>
 <script>
 import { useAuthStore } from '@/stores/authStore'
