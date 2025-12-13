@@ -9,13 +9,15 @@ export const useDataStore = defineStore('data', {
     players_total: null,
     matches: [],
     matches_total: null,
+    errorCode: "",
     errorMessage: "",
   }),
+
   actions: {
     // Игроки
     async get_players(page = 0, perpage = 5) {
+      this.errorMessage = "";
       try {
-        this.errorMessage = "";
         const response = await axios.get(`${backendUrl}/players`, {
           params: { page, perpage },
         });
@@ -23,35 +25,38 @@ export const useDataStore = defineStore('data', {
       } catch (error) {
         if (error.response) {
           this.errorMessage = error.response.data.message;
+          console.log(error);
         } else if (error.request) {
           this.errorMessage = error.message;
+          console.log(error);
         } else {
-          this.errorMessage = error.message;
+          console.log(error);
         }
-        console.log(error);
       }
     },
+
     async get_players_total() {
+      this.errorMessage = "";
       try {
-        this.errorMessage = "";
         const response = await axios.get(`${backendUrl}/players_total`);
         this.players_total = response.data;
       } catch (error) {
         if (error.response) {
           this.errorMessage = error.response.data.message;
+          console.log(error);
         } else if (error.request) {
           this.errorMessage = error.message;
+          console.log(error);
         } else {
-          this.errorMessage = error.message;
+          console.log(error);
         }
-        console.log(error);
       }
     },
 
     // Матчи
     async get_matches(page = 0, perpage = 5) {
+      this.errorMessage = "";
       try {
-        this.errorMessage = "";
         const response = await axios.get(`${backendUrl}/matches`, {
           params: { page, perpage },
         });
@@ -59,29 +64,62 @@ export const useDataStore = defineStore('data', {
       } catch (error) {
         if (error.response) {
           this.errorMessage = error.response.data.message;
+          console.log(error);
         } else if (error.request) {
           this.errorMessage = error.message;
+          console.log(error);
         } else {
-          this.errorMessage = error.message;
+          console.log(error);
         }
-        console.log(error);
       }
     },
+
     async get_matches_total() {
+      this.errorMessage = "";
       try {
-        this.errorMessage = "";
         const response = await axios.get(`${backendUrl}/matches_total`);
         this.matches_total = response.data;
       } catch (error) {
         if (error.response) {
           this.errorMessage = error.response.data.message;
+          console.log(error);
         } else if (error.request) {
           this.errorMessage = error.message;
+          console.log(error);
         } else {
-          this.errorMessage = error.message;
+          console.log(error);
         }
-        console.log(error);
       }
     },
+
+    async create_match(formData) {
+      this.errorMessage = "";
+      this.errorCode = "";
+
+      try {
+        const response = await axios.post(`${backendUrl}/matches`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        });
+
+        this.errorCode = response.data.code;
+        this.errorMessage = response.data.message ?? "";
+      } catch (error) {
+        if (error.response) {
+          this.errorCode = 11;
+          this.errorMessage = error.response.data.message;
+          console.log(error);
+        } else if (error.request) {
+          this.errorCode = 12;
+          this.errorMessage = error.message;
+          console.log(error);
+        } else {
+          this.errorCode = 13;
+          console.log(error);
+        }
+      }
+    }
   },
 });

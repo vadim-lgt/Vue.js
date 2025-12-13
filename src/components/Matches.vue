@@ -9,7 +9,6 @@
     :totalRecords="matches_total"
     @page="onPageChange"
     responsive-layout="scroll"
-    :laading="true"
     :first="offset"
   >
     <Column field="id" header="ID"/>
@@ -18,20 +17,43 @@
     <!--    <Column field="com1_id" header="1 команда"/>-->
     <!--    <Column field="com2_id" header="2 команда"/>-->
     <!--    ЭТО БЕЗ ОТОБОРАЖЕНИЯ НАИМЕНОВАНИЙ КОМАНД, ТОЛЬКО ПО ID-->
+    <Column header="Фото">
+      <template #body="slotProps">
+        <img v-if="slotProps.data.picture_url"
+             :src="slotProps.data.picture_url"
+             alt="Изображение матча"
+             class="max-h-32 max-w-32 object-contain rounded bg-gray-100" />
+        <span v-else>Нет изображения</span>
+      </template>
+    </Column>
+    <template #footer v-if="authStore.isAuthenticated">
+      <div class="text-end">
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          label="Добавить матч"
+          @click="$router.push('/createMatch')"
+        />
+      </div>
+    </template>
   </DataTable>
 </template>
 
 <script>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import Button from "primevue/button";
 import {useDataStore} from '@/stores/dataStore';
+import { useAuthStore } from '@/stores/authStore.js'
+
 
 export default {
   name: "MatchesTable",
-  components: {DataTable, Column},
+  components: {Button, DataTable, Column},
   data() {
     return {
       dataStore: useDataStore(),
+      authStore: useAuthStore(),
       perpage: 5,
       offset: 0,
     }
